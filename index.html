@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveMax - Professional Racing Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login/Sign In Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <h1 class="login-title">🏎️ DRIVEMAX</h1>
+                    <p class="login-tagline">Feel the Speed. Master the Road.</p>
+                </div>
+                
+                <div class="login-tabs">
+                    <button class="tab-btn active" onclick="switchTab('signin')">SIGN IN</button>
+                    <button class="tab-btn" onclick="switchTab('signup')">SIGN UP</button>
+                </div>
+                
+                <!-- Sign In Tab -->
+                <div id="signinTab" class="tab-content active">
+                    <form onsubmit="handleSignIn(event)">
+                        <div class="form-group">
+                            <label for="signinId">User ID / Email:</label>
+                            <input type="text" id="signinId" placeholder="Enter User ID (e.g., 100)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signinPassword">Password:</label>
+                            <input type="password" id="signinPassword" placeholder="Enter password" required>
+                        </div>
+                        <div class="remember-me">
+                            <input type="checkbox" id="rememberSignin">
+                            <label for="rememberSignin">Remember me</label>
+                        </div>
+                        <button type="submit" class="btn btn-login">SIGN IN</button>
+                    </form>
+                    <div class="login-info">
+                        <p><strong>Demo Credentials:</strong></p>
+                        <p>ID: <code>100</code></p>
+                        <p>Password: <code>password123</code></p>
+                        <p style="color: #2ECC71; margin-top: 10px; font-weight: bold;">✓ Using ID "100" grants PREMIUM access!</p>
+                    </div>
+                </div>
+                
+                <!-- Sign Up Tab -->
+                <div id="signupTab" class="tab-content">
+                    <form onsubmit="handleSignUp(event)">
+                        <div class="form-group">
+                            <label for="signupUsername">Username:</label>
+                            <input type="text" id="signupUsername" placeholder="Choose a username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email:</label>
+                            <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password:</label>
+                            <input type="password" id="signupPassword" placeholder="Create a password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupConfirm">Confirm Password:</label>
+                            <input type="password" id="signupConfirm" placeholder="Confirm password" required>
+                        </div>
+                        <div class="terms-check">
+                            <input type="checkbox" id="termsAccept" required>
+                            <label for="termsAccept">I agree to Terms & Conditions</label>
+                        </div>
+                        <button type="submit" class="btn btn-login">CREATE ACCOUNT</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen">
+        <div class="home-container">
+            <div class="user-welcome">
+                <span id="welcomeUser">Welcome, Player!</span>
+                <button class="btn-logout" onclick="logout()">LOGOUT</button>
+            </div>
+            <div class="logo-section">
+                <h1 class="game-title">🏎️ DRIVEMAX</h1>
+                <p class="tagline">Feel the Speed. Master the Road.</p>
+            </div>
+            <div class="home-menu">
+                <button class="btn btn-primary" onclick="showScreen('gameScreen')">PLAY GAME</button>
+                <button class="btn btn-secondary" onclick="showScreen('carsScreen')">GARAGE 🚗</button>
+                <button class="btn btn-secondary" onclick="showScreen('vehiclesScreen')">VEHICLES 🚁</button>
+                <button class="btn btn-secondary" onclick="showScreen('upgradesScreen')">UPGRADES ⚡</button>
+                <button class="btn btn-secondary" onclick="showScreen('mapsScreen')">MAPS 🗺️</button>
+                <button class="btn btn-secondary" onclick="showScreen('cloudScreen')">CLOUD ☁️</button>
+                <button class="btn btn-secondary" onclick="showScreen('supportScreen')">SUPPORT 📞</button>
+                <button class="btn btn-secondary" onclick="showScreen('storeScreen')">STORE 💳</button>
+            </div>
+            <div class="user-stats">
+                <span>Level: <strong id="userLevel">1</strong></span>
+                <span>Score: <strong id="userScore">0</strong></span>
+                <span>Coins: <strong id="userCoins">0</strong></span>
+                <span id="premiumBadge" class="premium-badge" style="display: none;">⭐ PREMIUM</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <div class="game-container">
+            <div class="game-header">
+                <div class="level-info">
+                    <h2>LEVEL <span id="currentLevel">1</span></h2>
+                    <p id="levelDescription">Complete the race and reach the finish line!</p>
+                </div>
+                <button class="btn-small" onclick="showScreen('homeScreen')">MENU</button>
+            </div>
+            <div class="game-canvas-wrapper">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+                <div class="game-overlay" id="gameOverlay"></div>
+            </div>
+            <div class="game-controls">
+                <div class="control-instructions">
+                    <span>↑ UP</span>
+                    <span>↓ DOWN</span>
+                    <span>← LEFT</span>
+                    <span>→ RIGHT</span>
+                </div>
+                <div class="game-stats">
+                    <span>Speed: <strong id="speed">0</strong> km/h</span>
+                    <span>Time: <strong id="timer">00:00</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cars Screen -->
+    <div id="carsScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>🚗 GARAGE - Select Your Car</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div id="carsList" class="items-grid">
+                <!-- Cars will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Maps Screen -->
+    <div id="mapsScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>🗺️ MAPS - Choose Your Track</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div id="mapsList" class="items-grid">
+                <!-- Maps will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Vehicles Screen -->
+    <div id="vehiclesScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>🚁 SPECIAL VEHICLES - Unlock & Upgrade</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div id="vehiclesList" class="items-grid">
+                <!-- Special vehicles will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrades Screen -->
+    <div id="upgradesScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>⚡ VEHICLE UPGRADES - Boost Your Performance</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div class="upgrades-info">
+                <div class="upgrade-stats">
+                    <h3>Current Vehicle:</h3>
+                    <p id="currentVehicleInfo">Select a vehicle to see upgrades</p>
+                </div>
+            </div>
+            <div id="upgradesList" class="upgrades-grid">
+                <!-- Upgrades will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Screen -->
+    <div id="storeScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>💳 PREMIUM STORE</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div class="premium-info">
+                <p>Unlock all cars and maps with one purchase!</p>
+                <div class="price-tag">₹100</div>
+            </div>
+            <div class="purchase-section">
+                <button class="btn btn-premium" onclick="initiatePayment()">BUY PREMIUM ACCESS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Backup Screen -->
+    <div id="cloudScreen" class="screen">
+        <div class="shop-container">
+            <div class="shop-header">
+                <h2>☁️ CLOUD BACKUP - Sync Your Data</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div class="cloud-section">
+                <div class="cloud-status">
+                    <div class="status-card">
+                        <h3>📊 Backup Status</h3>
+                        <p id="backupStatus">Last Backup: Never</p>
+                        <p id="backupSize">Data Size: Calculating...</p>
+                    </div>
+                </div>
+                
+                <div class="backup-actions">
+                    <div class="action-card">
+                        <div class="action-icon">💾</div>
+                        <h3>Upload to Cloud</h3>
+                        <p>Save your progress to the cloud</p>
+                        <button class="btn btn-action" onclick="uploadToCloud()">BACKUP NOW</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">📥</div>
+                        <h3>Download from Cloud</h3>
+                        <p>Restore your progress from cloud</p>
+                        <button class="btn btn-action" onclick="downloadFromCloud()">RESTORE</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">🔄</div>
+                        <h3>Auto Sync</h3>
+                        <p>Enable automatic cloud sync</p>
+                        <button class="btn btn-action" id="autoSyncBtn" onclick="toggleAutoSync()">ENABLE</button>
+                    </div>
+                </div>
+                
+                <div class="backup-details">
+                    <h3>📋 Backup Details</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Level:</span>
+                            <span class="detail-value" id="cloudLevel">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Score:</span>
+                            <span class="detail-value" id="cloudScore">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Coins:</span>
+                            <span class="detail-value" id="cloudCoins">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Premium Status:</span>
+                            <span class="detail-value" id="cloudPremium">Locked</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Upgrades:</span>
+                            <span class="detail-value" id="cloudUpgrades">0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Last Update:</span>
+                            <span class="detail-value" id="cloudLastUpdate">Never</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="backup-warning">
+                    <h3>⚠️ Important Notes</h3>
+                    <ul>
+                        <li>Cloud backup is stored locally using browser storage</li>
+                        <li>Clearing browser data will delete your backup</li>
+                        <li>For cloud account integration, contact support</li>
+                        <li>Auto-sync saves every 5 minutes during gameplay</li>
+                        <li>Maximum 10 backup versions are stored</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Payment Verification</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your User ID to proceed with payment:</p>
+                <input type="text" id="userIdInput" placeholder="Enter User ID (e.g., 100)" maxlength="10" class="modal-input">
+                <p class="payment-info">You will be redirected to UPI payment gateway</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal()">CANCEL</button>
+                <button class="btn btn-confirm" onclick="verifyAndPay()">VERIFY & PAY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Screen -->
+    <div id="supportScreen" class="screen">
+        <div class="support-container">
+            <div class="support-header">
+                <h2>📞 CUSTOMER SUPPORT</h2>
+                <button class="btn-small" onclick="showScreen('homeScreen')">BACK</button>
+            </div>
+            <div class="support-content">
+                <div class="support-card">
+                    <h3>📱 Contact Us</h3>
+                    <div class="support-info">
+                        <p><strong>Phone:</strong></p>
+                        <p class="support-number">+91 9889797878</p>
+                        <p class="support-hours">Available 24/7</p>
+                    </div>
+                </div>
+                <div class="support-card">
+                    <h3>❓ FAQ</h3>
+                    <div class="faq-items">
+                        <div class="faq-item">
+                            <p><strong>Q: How do I unlock all cars?</strong></p>
+                            <p>A: Purchase premium access for ₹100 to unlock all cars and maps.</p>
+                        </div>
+                        <div class="faq-item">
+                            <p><strong>Q: What is the User ID?</strong></p>
+                            <p>A: A unique 3-digit code (100) provided during payment verification.</p>
+                        </div>
+                        <div class="faq-item">
+                            <p><strong>Q: How do I progress through levels?</strong></p>
+                            <p>A: Complete races, earn points, and unlock new levels and cars.</p>
+                        </div>
+                        <div class="faq-item">
+                            <p><strong>Q: Can I refund my purchase?</strong></p>
+                            <p>A: Refunds are available within 7 days of purchase. Contact support.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="support-card">
+                    <h3>✉️ Feedback</h3>
+                    <textarea class="feedback-textarea" placeholder="Share your feedback or report issues..."></textarea>
+                    <button class="btn btn-primary" onclick="submitFeedback()">SUBMIT</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body success-body">
+                <div class="success-icon">✓</div>
+                <h2>Payment Successful!</h2>
+                <p id="successMessage">Premium access unlocked!</p>
+                <button class="btn btn-primary" onclick="closeSuccessModal()">CONTINUE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
